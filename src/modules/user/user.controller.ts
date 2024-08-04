@@ -1,14 +1,12 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { UserEntity, UserService, UserSignInDto, UserSignUpDto } from 'src/modules';
-import { AuthenticationGuard, AuthorizationGuard, CurrentUser, Roles } from 'src/util';
+import {
+  UserEntity,
+  UserService,
+  UserSignInDto,
+  UserSignUpDto,
+} from 'src/modules';
+import { AuthenticationGuard, CurrentUser } from 'src/util';
 
 @Controller('users')
 @ApiTags('Users')
@@ -23,7 +21,7 @@ export class UserController {
   @Post('sign-in')
   async signIn(@Body() signInDto: UserSignInDto) {
     const user = await this.userService.signIn(signInDto);
-    const accessToken = await this.userService.accessToken(user);
+    const accessToken = this.userService.accessToken(user);
     return { accessToken, user };
   }
 
