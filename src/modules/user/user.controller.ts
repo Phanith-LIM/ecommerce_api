@@ -6,15 +6,9 @@ import {
   Param,
   UseGuards,
 } from '@nestjs/common';
-import { UserService } from './user.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { UserSignUpDto } from './dto/user-sign-up.dto';
-import { UserSignInDto } from './dto/user-signin.dto';
-import { CurrentUser } from '../../util/decorator/current-user.decorator';
-import { UserEntity } from './entities/user.entity';
-import { AuthenticationGuard } from '../../util/guards/authentication.guard';
-import { AuthorizeGuard } from '../../util/guards/authorization.guard';
-import { Roles } from '../../util/common/user-roles.enum';
+import { UserEntity, UserService, UserSignInDto, UserSignUpDto } from 'src/modules';
+import { AuthenticationGuard, AuthorizationGuard, CurrentUser, Roles } from 'src/util';
 
 @Controller('users')
 @ApiTags('Users')
@@ -44,10 +38,9 @@ export class UserController {
   }
 
   @ApiBearerAuth()
-  @UseGuards(AuthenticationGuard, AuthorizeGuard([Roles.ADMIN]))
+  @UseGuards(AuthenticationGuard)
   @Get('profile/me')
   async getProfile(@CurrentUser() user: UserEntity) {
-    console.log(user);
     return user;
   }
   //

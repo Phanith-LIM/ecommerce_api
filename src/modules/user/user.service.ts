@@ -3,21 +3,19 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserEntity } from './entities/user.entity';
-import { UserSignUpDto } from './dto/user-sign-up.dto';
 import { compare, hash } from 'bcrypt';
-import { UserSignInDto } from './dto/user-signin.dto';
-import { sign } from 'jsonwebtoken';
-import * as process from 'node:process';
+import { UserEntity } from './entities';
+import { UpdateUserDto, UserSignInDto, UserSignUpDto } from './dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async signUp(signupDto: UserSignUpDto): Promise<UserEntity> {
@@ -84,16 +82,16 @@ export class UserService {
     return await this.userRepository.findOneBy({ email: email });
   }
 
-  async accessToken(user: UserEntity) {
-    return sign(
+  accessToken(user: UserEntity) {
+    return this.jwtService.sign(
       {
         id: user.id,
         email: user.email,
       },
-      process.env.ACCESS_TOKEN_SECRET_KEY,
       {
+        secret: process.env.ACCESS_TOKEN_SECRET_KEY,
         expiresIn: process.env.ACCESS_TOKEN_EXPIRE,
       },
-    );
+    )
   }
 }
