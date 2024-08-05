@@ -6,9 +6,11 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { compare, hash } from 'bcrypt';
-import { UserEntity } from './entities';
-import { UpdateUserDto, UserSignInDto, UserSignUpDto } from './dto';
 import { JwtService } from '@nestjs/jwt';
+import { UserEntity } from './entities/user.entity';
+import { UserSignUpDto } from './dto/user-sign-up.dto';
+import { UserSignInDto } from './dto/user-signin.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {

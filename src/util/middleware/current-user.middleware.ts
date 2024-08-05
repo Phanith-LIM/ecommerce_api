@@ -15,11 +15,17 @@ declare global {
 
 @Injectable()
 export class CurrentUserMiddleware implements NestMiddleware {
-  constructor(private readonly usersService: UserService, private  readonly jwtService: JwtService) {}
+  constructor(
+    private readonly usersService: UserService,
+    private readonly jwtService: JwtService,
+  ) {}
   async use(req: Request, _: Response, next: NextFunction) {
-
     const authHeader = req.headers.authorization || req.headers.Authorization;
-    if (!authHeader || isArray(authHeader) || !authHeader.startsWith('Bearer ')) {
+    if (
+      !authHeader ||
+      isArray(authHeader) ||
+      !authHeader.startsWith('Bearer ')
+    ) {
       req.currentUser = null;
       next();
       return;
@@ -27,7 +33,10 @@ export class CurrentUserMiddleware implements NestMiddleware {
 
     try {
       const token = authHeader.split(' ')[1];
-      const { id } = <JwtPayload> (this.jwtService.verify(token, { secret: process.env.ACCESS_TOKEN_SECRET_KEY, ignoreExpiration: false }));
+      const { id } = <JwtPayload>this.jwtService.verify(token, {
+        secret: process.env.ACCESS_TOKEN_SECRET_KEY,
+        ignoreExpiration: false,
+      });
       req.currentUser = await this.usersService.findOne(+id);
       next();
     } catch (err) {

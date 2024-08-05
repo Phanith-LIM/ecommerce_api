@@ -1,12 +1,11 @@
 import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import {
-  UserEntity,
-  UserService,
-  UserSignInDto,
-  UserSignUpDto,
-} from 'src/modules';
-import { AuthenticationGuard, CurrentUser } from 'src/util';
+import { UserService } from './user.service';
+import { UserSignUpDto } from './dto/user-sign-up.dto';
+import { UserSignInDto } from './dto/user-signin.dto';
+import { AuthenticationGuard } from '../../util/guards/authentication.guard';
+import { CurrentUser } from '../../util/decorator/current-user.decorator';
+import { UserEntity } from './entities/user.entity';
 
 @Controller('users')
 @ApiTags('Users')
