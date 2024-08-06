@@ -8,6 +8,7 @@ import { CategoriesModule } from './modules/categories/categories.module';
 import { CurrentUserMiddleware } from './util/middleware/current-user.middleware';
 import { ProductsModule } from './modules/products/products.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
+import { OrdersModule } from './modules/orders/orders.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ReviewsModule } from './modules/reviews/reviews.module';
     CategoriesModule,
     ProductsModule,
     ReviewsModule,
+    OrdersModule,
   ],
   controllers: [],
   providers: [],

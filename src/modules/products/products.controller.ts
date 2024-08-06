@@ -5,14 +5,14 @@ import {
   Body,
   Patch,
   Param,
-  UseGuards,
+  UseGuards, Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { CurrentUser } from '../../util/decorator/current-user.decorator';
 import { UserEntity } from '../user/entities/user.entity';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AuthenticationGuard } from '../../util/guards/authentication.guard';
 import { AuthorizationGuard } from '../../util/guards/authorization.guard';
 import { Roles } from '../../util/common/user-roles.enum';
@@ -33,10 +33,14 @@ export class ProductsController {
   }
 
   @Get()
-  findAll() {
-    return this.productsService.findAll();
+  @ApiQuery({ name: 'search', required: false })
+  @ApiQuery({ name: 'category', required: false })
+  @ApiQuery({ name: 'minPrice', required: false })
+  @ApiQuery({ name: 'maxPrice', required: false })
+  @ApiQuery({ name: 'limit', required: false })
+  async findAll(@Query() query: any) {
+    return await this.productsService.findAll(query);
   }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(+id);
