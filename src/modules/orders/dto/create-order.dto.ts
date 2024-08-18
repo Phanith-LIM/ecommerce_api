@@ -8,7 +8,7 @@ export class CreateOrderDto {
   @ApiProperty({ type: CreateShippingDto })
   @Type(() => CreateShippingDto)
   @ValidateNested()
-  shippingAddress: CreateShippingDto
+  shippingAddress: CreateShippingDto;
 
   @ApiProperty({ type: OrderedProductDto, isArray: true })
   @Type(() => OrderedProductDto)

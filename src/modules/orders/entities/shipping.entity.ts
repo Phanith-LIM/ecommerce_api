@@ -10,7 +10,7 @@ export class ShippingEntity {
   phone: string;
 
   @Column()
-  name: string
+  name: string;
 
   @Column()
   address: string;

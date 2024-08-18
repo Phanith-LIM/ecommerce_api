@@ -22,7 +22,11 @@ export class OrderEntity {
   @CreateDateColumn()
   orderAt: Timestamp;
 
-  @Column({ type: 'enum', enum: OrderStatusEnum, default: OrderStatusEnum.PROCESSING })
+  @Column({
+    type: 'enum',
+    enum: OrderStatusEnum,
+    default: OrderStatusEnum.PROCESSING,
+  })
   status: OrderStatusEnum;
 
   @Column({ nullable: true })
@@ -34,7 +38,9 @@ export class OrderEntity {
   @ManyToOne(() => UserEntity, (user) => user.ordersUpdatedBy)
   updatedBy: UserEntity;
 
-  @OneToOne(() => ShippingEntity, (shipping) => shipping.order, {cascade: true})
+  @OneToOne(() => ShippingEntity, (shipping) => shipping.order, {
+    cascade: true,
+  })
   @JoinColumn()
   shippingAddress: ShippingEntity;
 

@@ -1,7 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  UseGuards,
+  Put,
+} from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import { AuthenticationGuard } from 'src/util/guards/authentication.guard';
 import { CurrentUser } from '../../util/decorator/current-user.decorator';
 import { UserEntity } from '../user/entities/user.entity';
@@ -18,7 +26,10 @@ export class OrdersController {
   @UseGuards(AuthenticationGuard)
   @ApiBearerAuth()
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto, @CurrentUser() user: UserEntity) {
+  create(
+    @Body() createOrderDto: CreateOrderDto,
+    @CurrentUser() user: UserEntity,
+  ) {
     return this.ordersService.create(createOrderDto, user);
   }
 
@@ -35,7 +46,11 @@ export class OrdersController {
   @UseGuards(AuthenticationGuard, AuthorizationGuard([Roles.ADMIN]))
   @ApiBearerAuth()
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderStatusDto, @CurrentUser() currentUser: UserEntity) {
+  update(
+    @Param('id') id: string,
+    @Body() updateOrderDto: UpdateOrderStatusDto,
+    @CurrentUser() currentUser: UserEntity,
+  ) {
     return this.ordersService.update(+id, updateOrderDto, currentUser);
   }
 

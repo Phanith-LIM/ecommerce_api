@@ -5,7 +5,7 @@ export class CreateShippingDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  phone: string
+  phone: string;
 
   @ApiProperty()
   @IsNotEmpty()

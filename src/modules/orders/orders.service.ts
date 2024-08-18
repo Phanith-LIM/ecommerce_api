@@ -1,6 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import { UserEntity } from '../user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OrderEntity } from './entities/order.entity';
@@ -15,25 +18,28 @@ import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 @Injectable()
 export class OrdersService {
   constructor(
-    @InjectRepository(OrderEntity) private orderRepository: Repository<OrderEntity>,
-    @InjectRepository(ShippingEntity) private shippingRepository: Repository<ShippingEntity>,
-    @InjectRepository(OrdersProductsEntity) private ordersProductsRepository: Repository<OrdersProductsEntity>,
+    @InjectRepository(OrderEntity)
+    private orderRepository: Repository<OrderEntity>,
+    @InjectRepository(ShippingEntity)
+    private shippingRepository: Repository<ShippingEntity>,
+    @InjectRepository(OrdersProductsEntity)
+    private ordersProductsRepository: Repository<OrdersProductsEntity>,
     private readonly productService: ProductsService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto, user: UserEntity) {
-    const shippingEntity = new ShippingEntity()
-    Object.assign(shippingEntity, createOrderDto.shippingAddress)
+    const shippingEntity = new ShippingEntity();
+    Object.assign(shippingEntity, createOrderDto.shippingAddress);
 
     const orderEntity = new OrderEntity();
     Object.assign(orderEntity, createOrderDto.orderedProduct);
 
-    orderEntity.shippingAddress = shippingEntity
-    orderEntity.updatedBy = user
-    orderEntity.user = user
+    orderEntity.shippingAddress = shippingEntity;
+    orderEntity.updatedBy = user;
+    orderEntity.user = user;
     const orderTbl = await this.orderRepository.save(orderEntity);
 
-    let opEntity: {
+    const opEntity: {
       order: OrderEntity;
       product: ProductEntity;
       product_quantity: number;
@@ -45,8 +51,10 @@ export class OrdersService {
       const product = await this.productService.findOne(
         createOrderDto.orderedProduct[i].id,
       );
-      const product_quantity = createOrderDto.orderedProduct[i].product_quantity;
-      const product_unit_price = createOrderDto.orderedProduct[i].product_unit_price;
+      const product_quantity =
+        createOrderDto.orderedProduct[i].product_quantity;
+      const product_unit_price =
+        createOrderDto.orderedProduct[i].product_unit_price;
       opEntity.push({
         order,
         product,
@@ -93,13 +101,22 @@ export class OrdersService {
     let order = await this.findOne(id);
     if (!order) throw new NotFoundException('Order not found');
 
-    if (order.status === OrderStatusEnum.DELIVERED || order.status === OrderStatusEnum.CANCELED) {
+    if (
+      order.status === OrderStatusEnum.DELIVERED ||
+      order.status === OrderStatusEnum.CANCELED
+    ) {
       throw new BadRequestException(`Order already ${order.status}`);
     }
-    if (order.status ===OrderStatusEnum.PROCESSING && updateOrderStatusDto.status !=OrderStatusEnum.SHIPPED) {
+    if (
+      order.status === OrderStatusEnum.PROCESSING &&
+      updateOrderStatusDto.status != OrderStatusEnum.SHIPPED
+    ) {
       throw new BadRequestException(`Delivery before shipped !!!`);
     }
-    if (updateOrderStatusDto.status === OrderStatusEnum.SHIPPED && order.status === OrderStatusEnum.SHIPPED) {
+    if (
+      updateOrderStatusDto.status === OrderStatusEnum.SHIPPED &&
+      order.status === OrderStatusEnum.SHIPPED
+    ) {
       return order;
     }
     if (updateOrderStatusDto.status === OrderStatusEnum.SHIPPED) {

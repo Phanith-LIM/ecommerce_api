@@ -94,6 +94,6 @@ export class UserService {
         secret: process.env.ACCESS_TOKEN_SECRET_KEY,
         expiresIn: process.env.ACCESS_TOKEN_EXPIRE,
       },
-    )
+    );
   }
 }
